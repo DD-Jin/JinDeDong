@@ -1,6 +1,7 @@
 package com.text.jindd;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,13 +13,21 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.IllegalFormatCodePointException;
 
-public class MyExpandableListView extends BaseExpandableListAdapter {
+public class MyExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;
+    private int mSelectGroup = 0;
+    private int mSelectChild = 0;
 
-    public MyExpandableListView(Context context) {
+    public MyExpandableListViewAdapter(Context context) {
         mContext = context;
+    }
+
+    public void setmSelectNumber(int mSelectGroup,int mSelectChild) {
+        this.mSelectGroup = mSelectGroup;
+        this.mSelectChild = mSelectChild;
     }
 
 
@@ -75,15 +84,20 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
      */
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        convertView = LayoutInflater.from(mContext).inflate(R.layout.father_layout, parent, false);
-        TextView grouptext = convertView.findViewById(R.id.father_text);
+        GroupHolder gh;
+        if (convertView==null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.father_layout, parent, false);
+            gh = new GroupHolder(convertView);
+            convertView.setTag(gh);
+        }else
+            gh = (GroupHolder)convertView.getTag();
+
         String s = DataSource.FATHER[groupPosition];
-        grouptext.setText(s);
-        ImageView groupimage = convertView.findViewById(R.id.father_image);
+        gh.mGroupTxt.setText(s);
         if (isExpanded)
-            groupimage.setImageResource(R.drawable.up);
+            gh.mGroupImg.setImageResource(R.drawable.up);
         else
-            groupimage.setImageResource(R.drawable.down);
+            gh.mGroupImg.setImageResource(R.drawable.down);
         return convertView;
     }
 
@@ -92,13 +106,25 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
      */
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        convertView = LayoutInflater.from(mContext).inflate(R.layout.child_layout, parent, false);
-        TextView childtext = convertView.findViewById(R.id.child_text);
-        ImageView childimage = convertView.findViewById(R.id.child_image);
+        ChildHolder ch;
+        if (convertView==null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.child_layout, parent, false);
+            ch = new ChildHolder(convertView);
+            convertView.setTag(ch);
+        }else
+            ch = (ChildHolder)convertView.getTag();
+
         String s = DataSource.CHILD_NAME[groupPosition][childPosition];
-        childtext.setText(s);
+        ch.mChildTxt.setText(s);
         convertView.setTag(R.string.groupimage,s);
-        childimage.setImageResource(DataSource.CHILD_IMAGE[groupPosition][childPosition]);
+        ch.mChildImg.setImageResource(DataSource.CHILD_IMAGE[groupPosition][childPosition]);
+        if (groupPosition==mSelectGroup && childPosition==mSelectChild) {
+            ch.mChildTxt.setTextColor(Color.WHITE);
+            ch.mChildImg.setAlpha(1.0f);
+        } else {
+            ch.mChildTxt.setTextColor(Color.GRAY);
+            ch.mChildImg.setAlpha(0.5f);
+        }
         return convertView;
     }
 
@@ -108,6 +134,26 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    private static class GroupHolder{
+        public TextView mGroupTxt;
+        public ImageView mGroupImg;
+
+        public GroupHolder(View v) {
+            mGroupTxt = v.findViewById(R.id.father_text);
+            mGroupImg = v.findViewById(R.id.father_image);
+        }
+    }
+
+    private static class ChildHolder{
+        TextView mChildTxt;
+        ImageView mChildImg;
+
+        public ChildHolder(View v) {
+            mChildTxt = v.findViewById(R.id.child_text);
+            mChildImg = v.findViewById(R.id.child_image);
+        }
     }
 
 }

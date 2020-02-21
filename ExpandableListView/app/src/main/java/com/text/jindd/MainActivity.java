@@ -4,10 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewParent;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,8 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
         mView = findViewById(R.id.view1);
 
-        final MyExpandableListView myExpandableListView = new MyExpandableListView(MainActivity.this);
-        mView.setAdapter(myExpandableListView);
+        final MyExpandableListViewAdapter mAdapter = new MyExpandableListViewAdapter(MainActivity.this);
+        mView.setAdapter(mAdapter);
 
 
         //二级列表展开监听
@@ -45,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 String tag = (String)v.getTag(R.string.groupimage);
                 Toast.makeText(MainActivity.this, tag, Toast.LENGTH_SHORT).show();
+                mAdapter.setmSelectNumber(groupPosition,childPosition);
+                mAdapter.notifyDataSetChanged();
                 return true;
             }
         });
