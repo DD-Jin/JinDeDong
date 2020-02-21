@@ -17,17 +17,6 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
     private ArrayList<String[]> childlist = new ArrayList<String[]>();
     private ArrayList<Integer[]> childlistimage = new ArrayList<Integer[]>();
     private Context mContext;
-    private HashSet<Integer> mExpandList = new HashSet<>();
-
-    public void setmExpand(int mExpand) {
-        mExpandList.add(mExpand);
-
-    }
-
-    public void setmCollapse(int mCollapse) {
-        Log.d("setmCollapse", "setmCollapse: "+mCollapse);
-        mExpandList.remove(mCollapse);
-    }
 
     public MyExpandableListView(Context context) {
         mContext = context;
@@ -37,21 +26,35 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
         childlistimage.add(DataSource.CHILD4);
     }
 
+
+    /**
+     * @return 一级目录的个数
+     */
     @Override
     public int getGroupCount() {
         return DataSource.FATHER.length;
     }
 
+    /**
+     * @param groupPosition 一级目录的position
+     * @return 对应一级目录下的二级目录个数
+     */
     @Override
     public int getChildrenCount(int groupPosition) {
         return childlist.get(groupPosition).length;
     }
 
+    /**
+     * @return 获得某个父项
+     */
     @Override
     public Object getGroup(int groupPosition) {
         return DataSource.FATHER[groupPosition];
     }
 
+    /**
+     * @return 获得某个获得某个子项
+     */
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         return childlist.get(groupPosition)[childPosition];
@@ -72,6 +75,9 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
         return false;
     }
 
+    /**
+     * @param isExpanded     该父组件是否被打开
+     */
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         convertView = LayoutInflater.from(mContext).inflate(R.layout.father_layout, parent, false);
@@ -79,16 +85,16 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
         String s = DataSource.FATHER[groupPosition];
         grouptext.setText(s);
         ImageView groupimage = convertView.findViewById(R.id.father_image);
-        if (mExpandList.size()!=0) {
-            if (mExpandList.contains(groupPosition))
-                groupimage.setImageResource(R.drawable.up);
-            else
-                groupimage.setImageResource(R.drawable.down);
-        }else
+        if (isExpanded)
+            groupimage.setImageResource(R.drawable.up);
+        else
             groupimage.setImageResource(R.drawable.down);
         return convertView;
     }
 
+    /**
+     * @param isLastChild  该子项是否是组中的最后一个子项
+     */
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         convertView = LayoutInflater.from(mContext).inflate(R.layout.child_layout, parent, false);
@@ -101,6 +107,9 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
         return convertView;
     }
 
+    /**
+     * @return  子项是否可选中,如果要设置子项的点击事件,需要返回true
+     */
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
