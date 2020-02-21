@@ -15,9 +15,14 @@
         <ExpandableListView
             android:id="@+id/view1"
             android:layout_width="538px"
-            android:layout_height="match_parent"
-            android:groupIndicator="@drawable/up"
-            android:indicatorLeft="285px"/>
+            android:layout_height="match_parent" />
+<!--        android:divider=""            父目录分割线-->
+<!--        android:groupIndicator=""     父目录默认箭头的图片设置-->
+<!--        android:indicatorLeft=""      父目录默认箭头左边距-->
+<!--        android:childIndicator=""     子目录默认箭头的图片设置-->
+<!--        android:childIndicatorLeft="" 子目录录默认箭头左边距-->
+<!--        android:scrollIndicators=""   滑动指示器-->
+<!--        android:childDivider=""       字目录分割线-->
 
     </RelativeLayout>
 
