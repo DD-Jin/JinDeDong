@@ -1,6 +1,7 @@
 package com.text.jindd;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +15,10 @@ import java.util.HashSet;
 
 public class MyExpandableListView extends BaseExpandableListAdapter {
 
-    private ArrayList<String[]> childlist = new ArrayList<String[]>();
-    private ArrayList<Integer[]> childlistimage = new ArrayList<Integer[]>();
     private Context mContext;
 
     public MyExpandableListView(Context context) {
         mContext = context;
-        childlist.add(DataSource.CHILD1);
-        childlist.add(DataSource.CHILD2);
-        childlistimage.add(DataSource.CHILD3);
-        childlistimage.add(DataSource.CHILD4);
     }
 
 
@@ -41,7 +36,7 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
      */
     @Override
     public int getChildrenCount(int groupPosition) {
-        return childlist.get(groupPosition).length;
+        return DataSource.CHILD_NAME[groupPosition].length;
     }
 
     /**
@@ -57,7 +52,7 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
      */
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return childlist.get(groupPosition)[childPosition];
+        return DataSource.CHILD_NAME[groupPosition][childPosition];
     }
 
     @Override
@@ -100,10 +95,10 @@ public class MyExpandableListView extends BaseExpandableListAdapter {
         convertView = LayoutInflater.from(mContext).inflate(R.layout.child_layout, parent, false);
         TextView childtext = convertView.findViewById(R.id.child_text);
         ImageView childimage = convertView.findViewById(R.id.child_image);
-        String s = childlist.get(groupPosition)[childPosition];
+        String s = DataSource.CHILD_NAME[groupPosition][childPosition];
         childtext.setText(s);
         convertView.setTag(R.string.groupimage,s);
-        childimage.setImageResource(childlistimage.get(groupPosition)[childPosition]);
+        childimage.setImageResource(DataSource.CHILD_IMAGE[groupPosition][childPosition]);
         return convertView;
     }
 
